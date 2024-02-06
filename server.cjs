@@ -78,3 +78,24 @@ app.delete('/delete-entry', function(request, response) {
         })
     }
 })
+
+app.patch('/update-entry/:id', function(request, response) {
+    if(ObjectId.isValid(request.params.id)) {
+        db.collection('ExpensesData').updateOne(
+            { _id : new ObjectId(request.params.id) }, // identifier : selecting the document which we are going to update
+            { $set : request.body } // The data to be updated
+        ).then(function() {
+            response.status(200).json({
+                "status" : "Entry updated successfully"
+            })
+        }).catch(function() {
+            response.status(500).json({
+                "status" : "Unsuccessful on updating the entry"
+            })
+        })
+    } else {
+        response.status(500).json({
+            "status" : "ObjectId not valid"
+        })
+    }
+})
